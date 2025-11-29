@@ -1,0 +1,105 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+// Structure for each vending item
+struct Item {
+    string name;
+    double price;
+    int stock;
+};
+
+// Display the inventory
+void showInventory(Item items[], int size) {
+    cout << "\n======= SANITARY VENDING MACHINE INVENTORY =======\n";
+    cout << left << setw(20) << "Item"
+         << setw(10) << "Price"
+         << setw(10) << "Stock\n";
+    cout << "---------------------------------------------\n";
+
+    for (int i = 0; i < size; i++) {
+        cout << left << setw(20) << items[i].name
+             << setw(10) << items[i].price
+             << setw(10) << items[i].stock << endl;
+    }
+}
+
+// Ordering menu
+void orderItem(Item items[], int size) {
+    int choice, qty;
+
+    cout << "\n======= ORDER MENU =======\n";
+    for (int i = 0; i < size; i++) {
+        cout << i + 1 << ". " << items[i].name
+             << " - ₱" << items[i].price
+             << " (Stock: " << items[i].stock << ")\n";
+    }
+    cout << "0. Cancel\n";
+
+    cout << "\nEnter item number: ";
+    cin >> choice;
+
+    if (choice == 0) {
+        cout << "Order cancelled.\n";
+        return;
+    }
+
+    if (choice < 1 || choice > size) {
+        cout << "Invalid choice!\n";
+        return;
+    }
+
+    cout << "Enter quantity: ";
+    cin >> qty;
+
+    if (qty > items[choice - 1].stock) {
+        cout << "Not enough stock available!\n";
+        return;
+    }
+
+    // Compute total
+    double total = qty * items[choice - 1].price;
+    items[choice - 1].stock -= qty;  // Update inventory
+
+    cout << "\nYou ordered " << qty << " x " << items[choice - 1].name << endl;
+    cout << "Total: ₱" << total << endl;
+}
+
+int main() {
+    // Initial vending items (all napkins priced at ₱5 each)
+    const int ITEM_COUNT = 3;
+    Item vending[ITEM_COUNT] = {
+        {"Modes Napkin", 5.00, 50},
+        {"Sister Napkin", 5.00, 50},
+        {"Charme Napkin", 5.00, 50}
+    };
+
+    int option;
+
+    do {
+        cout << "\n=============================\n";
+        cout << "  SANITARY VENDING MACHINE   \n";
+        cout << "=============================\n";
+        cout << "1. View Inventory\n";
+        cout << "2. Order Items\n";
+        cout << "3. Exit\n";
+        cout << "Choose an option: ";
+        cin >> option;
+
+        switch(option) {
+            case 1:
+                showInventory(vending, ITEM_COUNT);
+                break;
+            case 2:
+                orderItem(vending, ITEM_COUNT);
+                break;
+            case 3:
+                cout << "Exiting program... Thank you!\n";
+                break;
+            default:
+                cout << "Invalid option! Try again.\n";
+        }
+    } while (option != 3);
+
+    return 0;
+}
